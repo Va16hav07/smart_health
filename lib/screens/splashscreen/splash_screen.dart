@@ -31,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF30ED30),
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Expanded(
@@ -67,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
               width: MediaQuery.of(context).size.width * 0.8,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
+                  backgroundColor: Color(0xFF30ED30),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -82,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Text(
                   'Get Started',
                   style: TextStyle(
-                    color: Color(0xFF30ED30),
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                   ),
