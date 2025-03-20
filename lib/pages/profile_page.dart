@@ -183,7 +183,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             child: Container(
                               padding: const EdgeInsets.all(4),
                               decoration: const BoxDecoration(
-                                color: Colors.green,
+                                color: Color(0xFF30ED30),
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(
@@ -218,7 +218,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                        backgroundColor: Color(0xFF30ED30),
                       ),
                       child: const Text('Edit'),
                     ),
@@ -296,7 +296,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     title: const Text('Pop-up Notification'),
                     secondary: const Icon(
                       Icons.notifications_active,
-                      color: Colors.green,
+                       color: Color(0xFF30ED30),
                     ),
                   ),
                 ]),
@@ -370,7 +370,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
         currentIndex: 4, // Profile page is now at index 4
-        selectedItemColor: Colors.green,
+        selectedItemColor: Color(0xFF30ED30),
         unselectedItemColor: Colors.grey,
         showSelectedLabels: true,
         showUnselectedLabels: true,
@@ -381,7 +381,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildListTile(String title, IconData icon, {VoidCallback? onTap}) {
     return ListTile(
-      leading: Icon(icon, color: Colors.green),
+      leading: Icon(icon,  color: Color(0xFF30ED30)),
       title: Text(title),
       trailing: const Icon(
         Icons.arrow_forward_ios,
@@ -451,7 +451,7 @@ class _ProfilePageState extends State<ProfilePage> {
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
-              color: Colors.green,
+               color: Color(0xFF30ED30),
             ),
           ),
           Text(label, style: const TextStyle(color: Colors.grey)),

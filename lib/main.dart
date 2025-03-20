@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
           ),
           themeMode:
               themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-          home: SplashScreen(),
+          home:  SplashScreen(),
           debugShowCheckedModeBanner: false,
           onGenerateRoute: RouteGuard.generateRoute,
         );

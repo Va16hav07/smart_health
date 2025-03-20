@@ -208,7 +208,11 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _isLoading
-                        ? const CircularProgressIndicator()
+                        ? const CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Color(0xFF30ED30),
+                          ),
+                        )
                         : ElevatedButton.icon(
                           onPressed: _handleLogin,
                           style: ElevatedButton.styleFrom(

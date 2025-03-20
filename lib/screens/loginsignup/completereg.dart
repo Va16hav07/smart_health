@@ -330,7 +330,11 @@ class _ProfileCompletionPageState extends State<ProfileCompletionPage> {
 
                   // Next Button
                   _isLoading
-                      ? const CircularProgressIndicator()
+                      ? const CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Color(0xFF30ED30),
+                        ),
+                      )
                       : ElevatedButton(
                         onPressed: _saveProfile,
                         style: ElevatedButton.styleFrom(

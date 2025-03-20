@@ -677,8 +677,11 @@ class _DashboardContentState extends State<DashboardContent> {
                 children: [
                   Container(
                     width: (MediaQuery.of(context).size.width - 47) / 2,
-                    height: 90, // Fixed height to prevent overflow
-                    padding: const EdgeInsets.all(15),
+                    height: 95, // Increased height
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.purple,
                       borderRadius: BorderRadius.circular(22),
@@ -690,7 +693,7 @@ class _DashboardContentState extends State<DashboardContent> {
                         Icon(
                           Icons.nightlight_round,
                           color: Colors.white,
-                          size: 24,
+                          size: 20, // Reduced icon size
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -698,14 +701,15 @@ class _DashboardContentState extends State<DashboardContent> {
                             Text(
                               'Sleep',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 11,
                                 color: Colors.white,
                               ),
                             ),
+                            const SizedBox(height: 2),
                             Text(
                               '8h 20m',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
@@ -715,11 +719,14 @@ class _DashboardContentState extends State<DashboardContent> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20), // Increased gap
+                  const SizedBox(height: 10), // Reduced gap
                   Container(
                     width: (MediaQuery.of(context).size.width - 47) / 2,
-                    height: 90, // Fixed height to prevent overflow
-                    padding: const EdgeInsets.all(15),
+                    height: 95, // Increased height
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.orange,
                       borderRadius: BorderRadius.circular(22),
@@ -731,7 +738,7 @@ class _DashboardContentState extends State<DashboardContent> {
                         Icon(
                           Icons.local_fire_department,
                           color: Colors.white,
-                          size: 24,
+                          size: 20, // Reduced icon size
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -739,14 +746,15 @@ class _DashboardContentState extends State<DashboardContent> {
                             Text(
                               'Calories',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 11,
                                 color: Colors.white,
                               ),
                             ),
+                            const SizedBox(height: 2),
                             Text(
                               '760 kCal',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
@@ -806,7 +814,6 @@ class _DashboardContentState extends State<DashboardContent> {
       ),
     );
   }
-
 }
 
 class BmiPieChart extends CustomPainter {
