@@ -12,6 +12,7 @@ import 'package:smart_health/pages/activity_history_page.dart';
 import 'package:smart_health/pages/workout_progress_page.dart';
 import 'package:smart_health/pages/contact_us_page.dart';
 import 'package:smart_health/pages/privacy_policy_page.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ProfilePage extends StatefulWidget {
   static const routeName = '/profile';
@@ -67,6 +68,23 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
     );
+  }
+
+  Future<void> _updateNotificationPreference(bool value) async {
+    try {
+      await _firestore.collection('users').doc(_auth.currentUser?.uid).update({
+        'notifications_enabled': value,
+      });
+      setState(() {});
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to update notification settings'),
+          ),
+        );
+      }
+    }
   }
 
   Stream<DocumentSnapshot> getUserData() {
@@ -290,18 +308,31 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ]),
                 _buildSection('Notification', [
-                  SwitchListTile(
-                    value: true,
-                    onChanged: (value) {},
-                    title: const Text('Pop-up Notification'),
-                    secondary: const Icon(
-                      Icons.notifications_active,
-                      color: Color(0xFF30ED30),
-                    ),
-                    activeColor: const Color(0xFF30ED30),
-                    trackColor: MaterialStateProperty.all(
-                      const Color(0xFF30ED30).withOpacity(0.3),
-                    ),
+                  StreamBuilder<DocumentSnapshot>(
+                    stream: getUserData(),
+                    builder: (context, snapshot) {
+                      bool notificationsEnabled = false;
+                      if (snapshot.hasData) {
+                        final userData =
+                            snapshot.data?.data() as Map<String, dynamic>?;
+                        notificationsEnabled =
+                            userData?['notifications_enabled'] ?? false;
+                      }
+
+                      return SwitchListTile(
+                        value: notificationsEnabled,
+                        onChanged: _updateNotificationPreference,
+                        title: const Text('Pop-up Notification'),
+                        secondary: const Icon(
+                          Icons.notifications_active,
+                          color: Color(0xFF30ED30),
+                        ),
+                        activeColor: const Color(0xFF30ED30),
+                        trackColor: MaterialStateProperty.all(
+                          const Color(0xFF30ED30).withOpacity(0.3),
+                        ),
+                      );
+                    },
                   ),
                 ]),
                 _buildSection('Other', [

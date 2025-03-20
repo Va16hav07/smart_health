@@ -7,6 +7,8 @@ import '../pages/challenges_page.dart';
 import '../pages/reminders_page.dart';
 import '../pages/workouts_page.dart';
 import '../pages/profile_page.dart';
+import '../pages/notifications_page.dart';
+import '../pages/bmi_details_page.dart';
 
 class DashboardScreen extends StatefulWidget {
   static const routeName = '/dashboard';
@@ -31,7 +33,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ChallengesPage(),
       RemindersPage(),
       WorkoutsPage(),
-      ProfilePage(),
+      const ProfilePage(),
     ];
     _loadUserData();
   }
@@ -45,17 +47,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 .collection('users')
                 .doc(user.uid)
                 .get();
-
         if (userData.exists) {
           double height =
               (userData.data()?['height'] ?? 0).toDouble(); // height in cm
           double weight =
               (userData.data()?['weight'] ?? 0).toDouble(); // weight in kg
-
           // Calculate BMI = weight(kg) / (height(m))²
           double heightInMeters = height / 100;
           double calculatedBmi = weight / (heightInMeters * heightInMeters);
-
           String status;
           if (calculatedBmi < 18.5) {
             status = 'You are underweight';
@@ -66,7 +65,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           } else {
             status = 'You are obese';
           }
-
           setState(() {
             firstName = userData.data()?['firstName'] ?? 'User';
             bmi = calculatedBmi;
@@ -81,7 +79,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ChallengesPage(),
               RemindersPage(),
               WorkoutsPage(),
-              ProfilePage(),
+              const ProfilePage(),
             ];
           });
         }
@@ -119,7 +117,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 });
               },
               type: BottomNavigationBarType.fixed,
-              items: [
+              items: const [
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.emoji_events),
@@ -138,7 +136,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   label: 'Profile',
                 ),
               ],
-              selectedItemColor: Color(0xFF30EC30),
+              selectedItemColor: const Color(0xFF30EC30),
               unselectedItemColor: Colors.grey.withOpacity(0.7),
             ),
           ),
@@ -153,11 +151,12 @@ class DashboardContent extends StatefulWidget {
   final double bmi;
   final String bmiStatus;
 
-  DashboardContent({
+  const DashboardContent({
+    Key? key,
     this.firstName = 'User',
     this.bmi = 0.0,
     this.bmiStatus = 'Loading...',
-  });
+  }) : super(key: key);
 
   @override
   State<DashboardContent> createState() => _DashboardContentState();
@@ -213,22 +212,36 @@ class _DashboardContentState extends State<DashboardContent> {
           children: [
             Text(
               _getGreeting(),
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
             ),
             Text(
               widget.firstName,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
             ),
           ],
         ),
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Color(0xFFF7F8F8),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => NotificationsPage(
+                      bmi: widget.bmi,
+                      bmiStatus: widget.bmiStatus,
+                    ),
+              ),
+            );
+          },
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: const Color(0xFFF7F8F8),
+            ),
+            child: const Icon(Icons.notifications_outlined),
           ),
-          child: Icon(Icons.notifications_outlined),
         ),
       ],
     );
@@ -247,7 +260,11 @@ class _DashboardContentState extends State<DashboardContent> {
       margin: const EdgeInsets.only(right: 10),
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: color,
+        gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [color, color.withOpacity(0.8)],
+        ),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -255,7 +272,7 @@ class _DashboardContentState extends State<DashboardContent> {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
               color: Colors.white,
@@ -264,7 +281,7 @@ class _DashboardContentState extends State<DashboardContent> {
           const SizedBox(height: 5),
           Text(
             value,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: Colors.white,
@@ -283,7 +300,7 @@ class _DashboardContentState extends State<DashboardContent> {
           _buildActivityCard(
             'Heart Rate',
             '78 BPM',
-            color: Color(0xFF30EC30),
+            color: const Color(0xFF30EC30),
             width: 150,
             height: 150,
           ),
@@ -336,7 +353,7 @@ class _DashboardContentState extends State<DashboardContent> {
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-              color: Color(0xFFF7F8F8),
+              color: const Color(0xFFF7F8F8),
               borderRadius: BorderRadius.circular(12),
             ),
             // Add workout icon here
@@ -349,11 +366,17 @@ class _DashboardContentState extends State<DashboardContent> {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 Text(
                   duration,
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
                 const SizedBox(height: 5),
                 Stack(
@@ -363,7 +386,7 @@ class _DashboardContentState extends State<DashboardContent> {
                       height: 10,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                        color: Color(0xFFF7F8F8),
+                        color: const Color(0xFFF7F8F8),
                       ),
                     ),
                     Container(
@@ -371,7 +394,7 @@ class _DashboardContentState extends State<DashboardContent> {
                       height: 10,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                        color: Color(0xFF30EC30),
+                        color: const Color(0xFF30EC30),
                       ),
                     ),
                   ],
@@ -390,7 +413,7 @@ class _DashboardContentState extends State<DashboardContent> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Latest Workout',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
@@ -399,7 +422,7 @@ class _DashboardContentState extends State<DashboardContent> {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
-                color: Color(0xFF30EC30),
+                color: const Color(0xFF30EC30),
               ),
             ),
           ],
@@ -427,17 +450,17 @@ class _DashboardContentState extends State<DashboardContent> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Workout Progress',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: Color(0xFF30EC30),
+                color: const Color(0xFF30EC30),
                 borderRadius: BorderRadius.circular(50),
               ),
-              child: Text(
+              child: const Text(
                 'Weekly',
                 style: TextStyle(
                   fontSize: 10,
@@ -460,25 +483,42 @@ class _DashboardContentState extends State<DashboardContent> {
       height: 57,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color: Color(0xFF30EC30),
+        gradient: LinearGradient(
+          // Removed const
+          begin: Alignment.centerRight,
+          end: Alignment.centerLeft,
+          colors: [
+            const Color(0xFF30EC30),
+            const Color(0xFF30EC30).withOpacity(0.8),
+          ],
+        ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Today Target',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-          ),
-          ElevatedButton(
-            onPressed: () {},
-            child: Text('Check'),
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Today Target',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
               ),
             ),
-          ),
-        ],
+            ElevatedButton(
+              onPressed: () {},
+              child: const Text('Check'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: const Color(0xFF30EC30),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -491,9 +531,13 @@ class _DashboardContentState extends State<DashboardContent> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(22),
         gradient: LinearGradient(
+          // Removed const
           begin: Alignment.centerRight,
           end: Alignment.centerLeft,
-          colors: [Color(0xFF30EC30), Color(0xFF30EC30).withOpacity(0.8)],
+          colors: [
+            const Color(0xFF30EC30),
+            const Color(0xFF30EC30).withOpacity(0.8),
+          ],
         ),
       ),
       child: Row(
@@ -503,7 +547,7 @@ class _DashboardContentState extends State<DashboardContent> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 'BMI (Body Mass Index)',
                 style: TextStyle(
                   fontSize: 14,
@@ -514,7 +558,7 @@ class _DashboardContentState extends State<DashboardContent> {
               const SizedBox(height: 5),
               Text(
                 widget.bmiStatus,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                   color: Colors.white,
@@ -522,24 +566,41 @@ class _DashboardContentState extends State<DashboardContent> {
               ),
               const SizedBox(height: 15),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF5F825C),
                   borderRadius: BorderRadius.circular(50),
                 ),
-                child: Text(
-                  'View More',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => BMIDetailsPage(
+                              bmi: widget.bmi,
+                              bmiStatus: widget.bmiStatus,
+                            ),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    'View More',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
             ],
           ),
           CustomPaint(
-            size: Size(88, 88),
+            size: const Size(88, 88),
             painter: BmiPieChart(
               percentage: (widget.bmi / 50) * 100, // Normalize BMI value
               backgroundColor: Colors.white.withOpacity(0.2),
@@ -551,7 +612,7 @@ class _DashboardContentState extends State<DashboardContent> {
               child: Center(
                 child: Text(
                   widget.bmi.toStringAsFixed(1),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
@@ -568,12 +629,12 @@ class _DashboardContentState extends State<DashboardContent> {
   Widget _buildDetailedActivityStatus() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      constraints: BoxConstraints(minHeight: 100),
+      constraints: const BoxConstraints(minHeight: 100),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+          const Text(
             'Activity Status',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
@@ -584,7 +645,15 @@ class _DashboardContentState extends State<DashboardContent> {
             height: 146,
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Color(0xFF30EC30),
+              gradient: LinearGradient(
+                // Removed const
+                begin: Alignment.centerRight,
+                end: Alignment.centerLeft,
+                colors: [
+                  const Color(0xFF30EC30),
+                  const Color(0xFF30EC30).withOpacity(0.8),
+                ],
+              ),
               borderRadius: BorderRadius.circular(22),
             ),
             child: Row(
@@ -596,7 +665,7 @@ class _DashboardContentState extends State<DashboardContent> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         'Heart Rate',
                         style: TextStyle(
                           fontSize: 14,
@@ -605,7 +674,7 @@ class _DashboardContentState extends State<DashboardContent> {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      Text(
+                      const Text(
                         '78 BPM',
                         style: TextStyle(
                           fontSize: 24,
@@ -621,7 +690,7 @@ class _DashboardContentState extends State<DashboardContent> {
                   width: 100,
                   height: 100,
                   child: CustomPaint(
-                    size: Size(100, 100),
+                    size: const Size(100, 100),
                     painter: HeartRateChart(),
                   ),
                 ),
@@ -637,7 +706,11 @@ class _DashboardContentState extends State<DashboardContent> {
                 height: 200,
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [Colors.blue, Colors.blue.withOpacity(0.8)],
+                  ),
                   borderRadius: BorderRadius.circular(22),
                 ),
                 child: Column(
@@ -645,18 +718,15 @@ class _DashboardContentState extends State<DashboardContent> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: const [
                         Text(
                           'Water Intake',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                          ), // Increased from 12
+                          style: TextStyle(fontSize: 16, color: Colors.white),
                         ),
                         Text(
                           '4L',
                           style: TextStyle(
-                            fontSize: 24, // Increased from 20
+                            fontSize: 24,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
@@ -664,6 +734,7 @@ class _DashboardContentState extends State<DashboardContent> {
                       ],
                     ),
                     SizedBox(
+                      // Removed const
                       width: 80,
                       height: 100,
                       child: _buildWaterIntakeMeter(65),
@@ -683,21 +754,26 @@ class _DashboardContentState extends State<DashboardContent> {
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.purple,
+                      gradient: LinearGradient(
+                        // Removed const
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                        colors: [Colors.purple, Colors.purple.withOpacity(0.8)],
+                      ),
                       borderRadius: BorderRadius.circular(22),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.nightlight_round,
                           color: Colors.white,
                           size: 20, // Reduced icon size
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                          children: const [
                             Text(
                               'Sleep',
                               style: TextStyle(
@@ -705,7 +781,7 @@ class _DashboardContentState extends State<DashboardContent> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 2),
+                            SizedBox(height: 2),
                             Text(
                               '8h 20m',
                               style: TextStyle(
@@ -728,21 +804,26 @@ class _DashboardContentState extends State<DashboardContent> {
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.orange,
+                      gradient: LinearGradient(
+                        // Removed const
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                        colors: [Colors.orange, Colors.orange.withOpacity(0.8)],
+                      ),
                       borderRadius: BorderRadius.circular(22),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.local_fire_department,
                           color: Colors.white,
                           size: 20, // Reduced icon size
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                          children: const [
                             Text(
                               'Calories',
                               style: TextStyle(
@@ -750,7 +831,7 @@ class _DashboardContentState extends State<DashboardContent> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 2),
+                            SizedBox(height: 2),
                             Text(
                               '760 kCal',
                               style: TextStyle(
@@ -776,35 +857,42 @@ class _DashboardContentState extends State<DashboardContent> {
   Widget _buildWaterIntakeMeter(double percentage) {
     return Container(
       width: double.infinity,
-      height: 80,
-      decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(10),
-      ),
+      height: 100,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             '${percentage.toInt()}%',
-            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
           ),
-          SizedBox(height: 5),
+          const SizedBox(height: 8),
           Container(
-            width: 15,
-            height: 50,
+            width: 20,
+            height: 60,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.blue),
+              color: Colors.white.withOpacity(0.2),
             ),
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: [
                 Container(
-                  width: 15,
-                  height: 50 * (percentage / 100),
+                  width: 20,
+                  height: 60 * (percentage / 100),
                   decoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.5),
+                        blurRadius: 8,
+                        spreadRadius: 1,
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -876,11 +964,9 @@ class HeartRateChart extends CustomPainter {
     final path = Path();
     path.moveTo(0, size.height * 0.5);
 
-    // Create heart rate pattern
+    final segment = size.width / 3;
     for (var i = 0; i < 3; i++) {
-      final segment = size.width / 3;
       final x = i * segment;
-
       path.lineTo(x + segment * 0.2, size.height * 0.5);
       path.lineTo(x + segment * 0.3, size.height * 0.2);
       path.lineTo(x + segment * 0.4, size.height * 0.8);

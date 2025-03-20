@@ -60,5 +60,7 @@
 	<string>This app needs access to health data to track your wellness.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>This app needs permission to update health data.</string>
+	<key>NSUserNotificationUsageDescription</key>
+	<string>We need to send you notifications about your health updates and reminders</string>
 </dict>
 </plist>
