@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:smart_health/widgets/auth_wrapper.dart';
 import 'splash_screen2.dart';
 
@@ -42,8 +43,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   Text(
                     'Smart Health',
                     style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 34, // Adjusted for iOS
+                      fontWeight: FontWeight.w600, // Less bold for iOS
                       color: Colors.black,
                     ),
                     textAlign: TextAlign.center,
@@ -52,8 +53,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   Text(
                     'Your Wellness, Our Priority!',
                     style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.black.withOpacity(0.6),
+                      fontSize: 17, // iOS standard font size
+                      color: CupertinoColors.secondaryLabel, // iOS native color
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -65,29 +66,60 @@ class _SplashScreenState extends State<SplashScreen> {
             padding: EdgeInsets.only(bottom: 40),
             child: Container(
               width: MediaQuery.of(context).size.width * 0.8,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF30ED30),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SplashScreen2()),
-                  );
-                },
-                child: Text(
-                  'Get Started',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-              ),
+              child:
+                  Theme.of(context).platform == TargetPlatform.iOS
+                      ? CupertinoButton(
+                        color: Color(0xFF30ED30),
+                        borderRadius: BorderRadius.circular(30),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 80,
+                          vertical: 15,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => SplashScreen2(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Get Started',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 17,
+                          ),
+                        ),
+                      )
+                      : ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF30ED30),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 80,
+                            vertical: 15,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SplashScreen2(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Get Started',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
             ),
           ),
         ],

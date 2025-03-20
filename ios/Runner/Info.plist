@@ -45,5 +45,20 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+		<string>http</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to capture photos for your profile.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs photos access to let you choose a profile picture.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs location access to find nearby medical facilities.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>This app needs access to health data to track your wellness.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>This app needs permission to update health data.</string>
 </dict>
 </plist>
