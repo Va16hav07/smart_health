@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'splash_screen3.dart';
 import 'splash_screen5.dart';
+import '../../widgets/circular_arrow_button.dart';
 
 class SplashScreen2 extends StatelessWidget {
   @override
@@ -62,12 +63,9 @@ class SplashScreen2 extends StatelessWidget {
             Positioned(
               right: 20,
               bottom: 40,
-              child: FloatingActionButton(
-                onPressed: () {
-                  _navigateToNext(context);
-                },
-                backgroundColor: Colors.white,
-                child: Icon(Icons.arrow_forward, color: Colors.green),
+              child: CircularArrowButton(
+                onPressed: () => _navigateToNext(context),
+                progress: 0.25,
               ),
             ),
             Positioned(

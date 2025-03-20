@@ -9,120 +9,132 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  bool _hasNavigated = false;
-
   @override
   void initState() {
     super.initState();
-    _navigationHandler();
+    // Removing auto-navigation
   }
 
-  void _navigationHandler() {
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted && !_hasNavigated) {
-        setState(() => _hasNavigated = true);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const AuthWrapper()),
-        );
-      }
-    });
+  void _handleGetStarted() {
+    // Check if user is new
+    bool isNewUser = true; // You should implement actual check here
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => isNewUser ? SplashScreen2() : const AuthWrapper(),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Smart Health',
-                    style: TextStyle(
-                      fontSize: 34, // Adjusted for iOS
-                      fontWeight: FontWeight.w600, // Less bold for iOS
-                      color: Colors.black,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Your Wellness, Our Priority!',
-                    style: TextStyle(
-                      fontSize: 17, // iOS standard font size
-                      color: CupertinoColors.secondaryLabel, // iOS native color
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.white, Color(0xFF30ED30).withOpacity(0.1)],
           ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 40),
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.8,
-              child:
-                  Theme.of(context).platform == TargetPlatform.iOS
-                      ? CupertinoButton(
-                        color: Color(0xFF30ED30),
-                        borderRadius: BorderRadius.circular(30),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 80,
-                          vertical: 15,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => SplashScreen2(),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          color: Color(0xFF30ED30),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFF30ED30).withOpacity(0.3),
+                              blurRadius: 20,
+                              offset: Offset(0, 10),
                             ),
-                          );
-                        },
-                        child: Text(
-                          'Get Started',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 17,
-                          ),
+                          ],
                         ),
-                      )
-                      : ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF30ED30),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 80,
-                            vertical: 15,
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SplashScreen2(),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'Get Started',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
+                        child: Icon(
+                          Icons.favorite,
+                          size: 60,
+                          color: Colors.white,
                         ),
                       ),
-            ),
+                      SizedBox(height: 40),
+                      Text(
+                        'Smart Health',
+                        style: TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF2E3E5C),
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Your Wellness, Our Priority!',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color(0xFF78839C),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      SizedBox(height: 60),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 40, left: 24, right: 24),
+                child: Container(
+                  width: double.infinity,
+                  height: 56,
+                  child:
+                      Theme.of(context).platform == TargetPlatform.iOS
+                          ? CupertinoButton(
+                            color: Color(0xFF30ED30),
+                            borderRadius: BorderRadius.circular(28),
+                            padding: EdgeInsets.zero,
+                            onPressed: _handleGetStarted,
+                            child: Text(
+                              'Get Started',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          )
+                          : ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF30ED30),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(28),
+                              ),
+                              elevation: 3,
+                            ),
+                            onPressed: _handleGetStarted,
+                            child: Text(
+                              'Get Started',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

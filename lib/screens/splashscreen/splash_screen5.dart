@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_health/screens/loginsignup/login.dart';
+import '../../widgets/circular_arrow_button.dart';
 
 class SplashScreen5 extends StatelessWidget {
   @override
@@ -46,7 +47,7 @@ class SplashScreen5 extends StatelessWidget {
           Positioned(
             right: 20,
             bottom: 40,
-            child: FloatingActionButton(
+            child: CircularArrowButton(
               onPressed: () {
                 Navigator.of(context).pushReplacement(
                   PageRouteBuilder(
@@ -65,8 +66,7 @@ class SplashScreen5 extends StatelessWidget {
                   ),
                 );
               },
-              backgroundColor: Colors.white,
-              child: Icon(Icons.arrow_forward, color: Colors.green),
+              progress: 1.0,
             ),
           ),
         ],

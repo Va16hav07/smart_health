@@ -6,7 +6,6 @@ import 'screens/splashscreen/splash_screen.dart';
 import 'firebase_options.dart';
 import 'package:smart_health/widgets/auth_wrapper.dart';
 import 'package:smart_health/utils/routes.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   try {
@@ -15,20 +14,10 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    bool isFirstLaunch = true; // Default to true to show splash screen
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      isFirstLaunch = prefs.getBool('first_launch') ?? true;
-      await prefs.setBool('first_launch', false);
-    } catch (e) {
-      print('SharedPreferences error: $e');
-      // Keep isFirstLaunch as true if there's an error
-    }
-
     runApp(
       ChangeNotifierProvider(
         create: (_) => ThemeProvider(),
-        child: MyApp(showSplash: true), // Always show splash on fresh start
+        child: const RouterWrapper(child: MyApp()),
       ),
     );
   } catch (e) {
@@ -41,9 +30,18 @@ void main() async {
   }
 }
 
+class RouterWrapper extends StatelessWidget {
+  final Widget child;
+  const RouterWrapper({Key? key, required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return child;
+  }
+}
+
 class MyApp extends StatelessWidget {
-  final bool showSplash;
-  const MyApp({super.key, required this.showSplash});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +63,7 @@ class MyApp extends StatelessWidget {
           ),
           themeMode:
               themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-          home: showSplash ? SplashScreen() : const AuthWrapper(),
+          home: SplashScreen(),
           debugShowCheckedModeBanner: false,
           onGenerateRoute: RouteGuard.generateRoute,
         );
