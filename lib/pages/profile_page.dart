@@ -296,7 +296,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     title: const Text('Pop-up Notification'),
                     secondary: const Icon(
                       Icons.notifications_active,
-                       color: Color(0xFF30ED30),
+                      color: Color(0xFF30ED30),
+                    ),
+                    activeColor: const Color(0xFF30ED30),
+                    trackColor: MaterialStateProperty.all(
+                      const Color(0xFF30ED30).withOpacity(0.3),
                     ),
                   ),
                 ]),
@@ -381,7 +385,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildListTile(String title, IconData icon, {VoidCallback? onTap}) {
     return ListTile(
-      leading: Icon(icon,  color: Color(0xFF30ED30)),
+      leading: Icon(icon, color: Color(0xFF30ED30)),
       title: Text(title),
       trailing: const Icon(
         Icons.arrow_forward_ios,
@@ -451,7 +455,7 @@ class _ProfilePageState extends State<ProfilePage> {
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
-               color: Color(0xFF30ED30),
+              color: Color(0xFF30ED30),
             ),
           ),
           Text(label, style: const TextStyle(color: Colors.grey)),

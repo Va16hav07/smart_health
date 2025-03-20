@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:smart_health/providers/theme_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_health/widgets/auth_wrapper.dart';
+import 'package:smart_health/pages/profile_page.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -12,7 +13,7 @@ class SettingsPage extends StatelessWidget {
       await FirebaseAuth.instance.signOut();
       // The AuthWrapper will automatically redirect to login
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) =>  AuthWrapper()),
+        MaterialPageRoute(builder: (context) => AuthWrapper()),
         (route) => false,
       );
     } catch (e) {
@@ -25,9 +26,26 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false, // Prevent back button
+      onWillPop: () async {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfilePage()),
+        );
+        return false;
+      },
       child: Scaffold(
-        appBar: AppBar(title: const Text('Settings')),
+        appBar: AppBar(
+          title: const Text('Settings'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
+            },
+          ),
+        ),
         body: ListView(
           children: [
             Consumer<ThemeProvider>(
@@ -35,6 +53,10 @@ class SettingsPage extends StatelessWidget {
                 return SwitchListTile(
                   title: const Text('Dark Mode'),
                   value: themeProvider.isDarkMode,
+                  activeColor: const Color(0xFF30ED30),
+                  trackColor: MaterialStateProperty.all(
+                    const Color(0xFF30ED30).withOpacity(0.3),
+                  ),
                   onChanged: (value) {
                     themeProvider.toggleTheme();
                   },
@@ -44,7 +66,7 @@ class SettingsPage extends StatelessWidget {
             const SizedBox(height: 16),
             _buildSection('App Settings', [
               ListTile(
-                leading: const Icon(Icons.language, color: Colors.green),
+                leading: const Icon(Icons.language, color: Color(0xFF30ED30)),
                 title: const Text('Language'),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {},
@@ -52,7 +74,7 @@ class SettingsPage extends StatelessWidget {
               ListTile(
                 leading: const Icon(
                   Icons.notifications_active,
-                  color: Colors.green,
+                  color: Color(0xFF30ED30),
                 ),
                 title: const Text('Notification Settings'),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
