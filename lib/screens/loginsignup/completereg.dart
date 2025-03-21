@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_health/home/dashboard.dart';
 import 'package:wheel_chooser/wheel_chooser.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:smart_health/screens/loginsignup/welcome_page.dart';
 
 class ProfileCompletionPage extends StatefulWidget {
   final String userId;
@@ -52,7 +53,7 @@ class _ProfileCompletionPageState extends State<ProfileCompletionPage> {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const DashboardScreen()),
+          MaterialPageRoute(builder: (context) => WelcomePage(username: 'your_username')),
         );
       }
     } catch (e) {
