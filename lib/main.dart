@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:smart_health/providers/theme_provider.dart';
 import 'screens/splashscreen/splash_screen.dart';
 import 'firebase_options.dart';
-import 'package:smart_health/widgets/auth_wrapper.dart';
 import 'package:smart_health/utils/routes.dart';
 
 void main() async {

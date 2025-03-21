@@ -7,12 +7,6 @@ class BMIDetailsPage extends StatelessWidget {
   const BMIDetailsPage({Key? key, required this.bmi, required this.bmiStatus})
     : super(key: key);
 
-  Color _getBMIStatusColor() {
-    if (bmi < 18.5) return Colors.blue;
-    if (bmi < 25) return Color(0xFF30EC30);
-    if (bmi < 30) return Colors.orange;
-    return Colors.red;
-  }
 
   @override
   Widget build(BuildContext context) {

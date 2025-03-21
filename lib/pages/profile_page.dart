@@ -12,7 +12,6 @@ import 'package:smart_health/pages/activity_history_page.dart';
 import 'package:smart_health/pages/workout_progress_page.dart';
 import 'package:smart_health/pages/contact_us_page.dart';
 import 'package:smart_health/pages/privacy_policy_page.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class ProfilePage extends StatefulWidget {
   static const routeName = '/profile';

@@ -21,6 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
+        // ignore: dead_code
         builder: (context) => isNewUser ? SplashScreen2() : const AuthWrapper(),
       ),
     );
