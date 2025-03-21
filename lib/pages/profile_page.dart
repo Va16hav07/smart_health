@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_health/home/dashboard.dart';
 import 'package:smart_health/pages/challenges_page.dart';
+import 'package:smart_health/pages/edit_profile_page.dart';
 import 'package:smart_health/pages/reminders_page.dart';
 import 'package:smart_health/pages/workouts_page.dart';
 import 'package:smart_health/pages/settings_page.dart';
@@ -31,6 +32,26 @@ class _ProfilePageState extends State<ProfilePage> {
     'assets/profile/profile3.png',
     'assets/profile/profile4.jpg',
   ];
+
+  bool _notificationsEnabled = false;
+  Map<String, dynamic>? _userData;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize notification state
+    _firestore.collection('users').doc(_auth.currentUser?.uid).get().then((
+      doc,
+    ) {
+      if (mounted) {
+        setState(() {
+          _notificationsEnabled = doc.data()?['notifications_enabled'] ?? false;
+        });
+      }
+    });
+    _loadUserData();
+  }
 
   Future<void> _changeAvatar() async {
     await showDialog(
@@ -70,12 +91,20 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _updateNotificationPreference(bool value) async {
+    // Update local state immediately
+    setState(() {
+      _notificationsEnabled = value;
+    });
+
     try {
       await _firestore.collection('users').doc(_auth.currentUser?.uid).update({
         'notifications_enabled': value,
       });
-      setState(() {});
     } catch (e) {
+      // Revert local state if update fails
+      setState(() {
+        _notificationsEnabled = !value;
+      });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -86,11 +115,42 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Stream<DocumentSnapshot> getUserData() {
-    return _firestore
-        .collection('users')
-        .doc(_auth.currentUser?.uid)
-        .snapshots();
+  Future<void> _loadUserData() async {
+    try {
+      final doc =
+          await _firestore
+              .collection('users')
+              .doc(_auth.currentUser?.uid)
+              .get();
+      if (mounted) {
+        setState(() {
+          _userData = doc.data();
+          _notificationsEnabled = _userData?['notifications_enabled'] ?? false;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  int calculateAge(Timestamp? dateOfBirth) {
+    if (dateOfBirth == null) return 0;
+
+    final today = DateTime.now();
+    final birthDate = dateOfBirth.toDate();
+    int age = today.year - birthDate.year;
+
+    if (today.month < birthDate.month ||
+        (today.month == birthDate.month && today.day < birthDate.day)) {
+      age--;
+    }
+
+    return age;
   }
 
   void _onItemTapped(int index) {
@@ -125,21 +185,6 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  int calculateAge(Timestamp? dateOfBirth) {
-    if (dateOfBirth == null) return 0;
-
-    final today = DateTime.now();
-    final birthDate = dateOfBirth.toDate();
-    int age = today.year - birthDate.year;
-
-    if (today.month < birthDate.month ||
-        (today.month == birthDate.month && today.day < birthDate.day)) {
-      age--;
-    }
-
-    return age;
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -158,168 +203,161 @@ class _ProfilePageState extends State<ProfilePage> {
           IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
         ],
       ),
-      body: StreamBuilder<DocumentSnapshot>(
-        stream: getUserData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(child: Text('Something went wrong'));
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final userData = snapshot.data?.data() as Map<String, dynamic>?;
-          final avatarIndex = userData?['avatarIndex'] ?? 0;
-
-          // Add this debug print to verify data
-          print('Firestore Data: $userData');
-
-          final firstName = userData?['firstName']?.toString() ?? '';
-          final lastName = userData?['lastName']?.toString() ?? '';
-          final fullName = '$firstName $lastName'.trim();
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    GestureDetector(
-                      onTap: _changeAvatar,
-                      child: Stack(
-                        children: [
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundImage: AssetImage(avatars[avatarIndex]),
-                          ),
-                          Positioned(
-                            right: 0,
-                            bottom: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF30ED30),
-                                shape: BoxShape.circle,
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: _changeAvatar,
+                          child: Stack(
+                            children: [
+                              CircleAvatar(
+                                radius: 40,
+                                backgroundImage: AssetImage(
+                                  avatars[_userData?['avatarIndex'] ?? 0],
+                                ),
                               ),
-                              child: const Icon(
-                                Icons.edit,
-                                size: 16,
-                                color: Colors.white,
+                              Positioned(
+                                right: 0,
+                                bottom: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFF30ED30),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.edit,
+                                    size: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${_userData?['firstName']?.toString() ?? ''} ${_userData?['lastName']?.toString() ?? ''}'
+                                        .trim()
+                                        .isEmpty
+                                    ? 'User'
+                                    : '${_userData?['firstName']?.toString() ?? ''} ${_userData?['lastName']?.toString() ?? ''}'
+                                        .trim(),
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Text(
+                                'Member',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => EditProfilePage(
+                                      userData: _userData ?? {},
+                                    ),
+                              ),
+                            );
+                            if (result == true) {
+                              _loadUserData();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF30ED30),
+                          ),
+                          child: const Text('Edit'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildInfoCard(
+                          '${_userData?['height'] ?? '--'}cm',
+                          'Height',
+                        ),
+                        _buildInfoCard(
+                          '${_userData?['weight'] ?? '--'}kg',
+                          'Weight',
+                        ),
+                        _buildInfoCard(
+                          '${calculateAge(_userData?['dateOfBirth'] as Timestamp?)}yo',
+                          'Age',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 30),
+                    _buildSection('Account', [
+                      _buildListTile(
+                        'Personal Data',
+                        Icons.person,
+                        onTap:
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const PersonalDataPage(),
                               ),
                             ),
-                          ),
-                        ],
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            fullName.isEmpty ? 'User' : fullName,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                      _buildListTile(
+                        'Achievement',
+                        Icons.emoji_events,
+                        onTap:
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const AchievementPage(),
+                              ),
                             ),
-                          ),
-                          const Text(
-                            'Member',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ],
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF30ED30),
+                      _buildListTile(
+                        'Activity History',
+                        Icons.access_time,
+                        onTap:
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => const ActivityHistoryPage(),
+                              ),
+                            ),
                       ),
-                      child: const Text('Edit'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildInfoCard(
-                      '${userData?['height'] ?? '--'}cm',
-                      'Height',
-                    ),
-                    _buildInfoCard(
-                      '${userData?['weight'] ?? '--'}kg',
-                      'Weight',
-                    ),
-                    _buildInfoCard(
-                      '${calculateAge(userData?['dateOfBirth'] as Timestamp?)}yo',
-                      'Age',
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30),
-                _buildSection('Account', [
-                  _buildListTile(
-                    'Personal Data',
-                    Icons.person,
-                    onTap:
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PersonalDataPage(),
-                          ),
-                        ),
-                  ),
-                  _buildListTile(
-                    'Achievement',
-                    Icons.emoji_events,
-                    onTap:
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AchievementPage(),
-                          ),
-                        ),
-                  ),
-                  _buildListTile(
-                    'Activity History',
-                    Icons.access_time,
-                    onTap:
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ActivityHistoryPage(),
-                          ),
-                        ),
-                  ),
-                  _buildListTile(
-                    'Workout Progress',
-                    Icons.fitness_center,
-                    onTap:
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const WorkoutProgressPage(),
-                          ),
-                        ),
-                  ),
-                ]),
-                _buildSection('Notification', [
-                  StreamBuilder<DocumentSnapshot>(
-                    stream: getUserData(),
-                    builder: (context, snapshot) {
-                      bool notificationsEnabled = false;
-                      if (snapshot.hasData) {
-                        final userData =
-                            snapshot.data?.data() as Map<String, dynamic>?;
-                        notificationsEnabled =
-                            userData?['notifications_enabled'] ?? false;
-                      }
-
-                      return SwitchListTile(
-                        value: notificationsEnabled,
+                      _buildListTile(
+                        'Workout Progress',
+                        Icons.fitness_center,
+                        onTap:
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => const WorkoutProgressPage(),
+                              ),
+                            ),
+                      ),
+                    ]),
+                    _buildSection('Notification', [
+                      SwitchListTile(
+                        value: _notificationsEnabled,
                         onChanged: _updateNotificationPreference,
                         title: const Text('Pop-up Notification'),
                         secondary: const Icon(
@@ -330,50 +368,46 @@ class _ProfilePageState extends State<ProfilePage> {
                         trackColor: MaterialStateProperty.all(
                           const Color(0xFF30ED30).withOpacity(0.3),
                         ),
-                      );
-                    },
-                  ),
-                ]),
-                _buildSection('Other', [
-                  _buildListTile(
-                    'Contact Us',
-                    Icons.mail,
-                    onTap:
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ContactUsPage(),
-                          ),
-                        ),
-                  ),
-                  _buildListTile(
-                    'Privacy Policy',
-                    Icons.privacy_tip,
-                    onTap:
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PrivacyPolicyPage(),
-                          ),
-                        ),
-                  ),
-                  _buildListTile(
-                    'Settings',
-                    Icons.settings,
-                    onTap:
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SettingsPage(),
-                          ),
-                        ),
-                  ),
-                ]),
-              ],
-            ),
-          );
-        },
-      ),
+                      ),
+                    ]),
+                    _buildSection('Other', [
+                      _buildListTile(
+                        'Contact Us',
+                        Icons.mail,
+                        onTap:
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ContactUsPage(),
+                              ),
+                            ),
+                      ),
+                      _buildListTile(
+                        'Privacy Policy',
+                        Icons.privacy_tip,
+                        onTap:
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const PrivacyPolicyPage(),
+                              ),
+                            ),
+                      ),
+                      _buildListTile(
+                        'Settings',
+                        Icons.settings,
+                        onTap:
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SettingsPage(),
+                              ),
+                            ),
+                      ),
+                    ]),
+                  ],
+                ),
+              ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const [
