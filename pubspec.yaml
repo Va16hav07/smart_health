@@ -76,6 +76,7 @@ flutter:
     - assets/images/splash3.png
     - assets/images/splash4.png
     - assets/images/userinfo.png
+    - assets/images/welcome.png
     - assets/icons/google.png
     - assets/profile/profile1.jpg
     - assets/profile/profile2.png

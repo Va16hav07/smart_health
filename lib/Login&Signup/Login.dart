@@ -1,5 +1,7 @@
 import 'Signup.dart';
+import 'forgetpass.dart';
 import 'package:flutter/material.dart';
+import '../Home/Dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isChecked = false;
-  bool _isPasswordVisible = false; // Add this line
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -134,22 +136,37 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
-                    Text(
-                      'Forgot Password?',
-                      style: TextStyle(color: Color(0xFFE86969)),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ForgotPasswordPage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Forgot Password?',
+                        style: TextStyle(color: Color(0xFFE86969)),
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
                 Center(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DashboardPage(),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF86E200),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          25,
-                        ), 
+                        borderRadius: BorderRadius.circular(25),
                       ),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 120,

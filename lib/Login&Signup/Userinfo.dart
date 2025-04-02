@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_health/Login&Signup/welcome.dart';
 
 void main() {
   runApp(UserInfoApp());
@@ -24,6 +25,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   DateTime? selectedDate;
   final TextEditingController weightController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
+  final TextEditingController nameController =
+      TextEditingController(); // Add this line
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +46,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20),
+                  _buildInputField(
+                    "Enter Your Name",
+                    "",
+                    nameController,
+                  ), // Add this line
                   _buildDropdown(),
                   _buildDatePicker(),
                   _buildInputField("Enter Your Weight", "KG", weightController),
@@ -52,7 +60,20 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.5,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => WelcomePage(
+                                    userName:
+                                        nameController.text.isNotEmpty
+                                            ? nameController.text
+                                            : 'User',
+                                  ),
+                            ),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF86E200),
                           shape: RoundedRectangleBorder(
