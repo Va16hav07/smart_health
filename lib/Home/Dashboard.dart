@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import '../widgets/CustomBottomNavBar.dart';
 import '../pages/NotificationPage.dart';
 import '../pages/ProfilePage.dart';
+import '../controllers/NavigationController.dart';
+import '../pages/AIAssistantPage.dart';
 
 class DashboardPage extends StatelessWidget {
+  final NavigationController _controller = NavigationController();
+
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
@@ -12,12 +16,7 @@ class DashboardPage extends StatelessWidget {
       backgroundColor: Colors.transparent,
       extendBody: true,
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(
-          16.0,
-          40.0,
-          16.0,
-          bottomPadding + 80.0, // Dynamic bottom padding
-        ), // Increased top padding
+        padding: EdgeInsets.fromLTRB(16.0, 40.0, 16.0, bottomPadding + 80.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -70,7 +69,10 @@ class DashboardPage extends StatelessWidget {
                     SizedBox(width: 12),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
+                        _controller.setIndex(
+                          4,
+                        ); // Set bottom nav to profile index
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                             builder: (context) => ProfilePage(),
@@ -186,6 +188,31 @@ class DashboardPage extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AIAssistantPage()),
+          );
+        },
+        child: Container(
+          width: 56,
+          height: 56,
+          decoration: BoxDecoration(
+            color: Color(0xFF86E200),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Color(0xFF86E200).withOpacity(0.3),
+                blurRadius: 8,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Icon(Icons.mic, color: Colors.black, size: 24),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: CustomBottomNavBar(),
     );
   }
@@ -235,7 +262,7 @@ class DashboardPage extends StatelessWidget {
 
   Widget _buildBMICard(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.5,
+      width: MediaQuery.of(context).size.width * 0.5, // Reduced from 24
       height: 216,
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       decoration: BoxDecoration(
@@ -690,17 +717,17 @@ class FlamesPainter extends CustomPainter {
         Path()
           ..moveTo(size.width * 0.5, size.height * 0.8)
           ..cubicTo(
-            size.width * 0.2,
+            size.width * 0.6,
             size.height * 0.6,
-            size.width * 0.4,
+            size.width * 0.8,
             size.height * 0.2,
             size.width * 0.5,
             size.height * 0.2,
           )
           ..cubicTo(
-            size.width * 0.6,
+            size.width * 0.4,
             size.height * 0.2,
-            size.width * 0.8,
+            size.width * 0.2,
             size.height * 0.6,
             size.width * 0.5,
             size.height * 0.8,

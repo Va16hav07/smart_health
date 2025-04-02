@@ -9,7 +9,7 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text('Profile'),
-        automaticallyImplyLeading: false, // Remove back button
+        automaticallyImplyLeading: false, 
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),

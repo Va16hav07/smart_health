@@ -3,8 +3,9 @@ import '../pages/ChallengesPage.dart';
 import '../pages/ProfilePage.dart';
 import '../pages/NotificationPage.dart';
 import '../Home/Dashboard.dart';
-import '../pages/WorkoutPage.dart'; // Create this new file
+import '../pages/WorkoutPage.dart'; 
 import '../controllers/NavigationController.dart';
+import '../pages/ReminderPage.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   @override
@@ -35,10 +36,10 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         }
         break;
       case 2:
-        if (!(context.widget is NotificationPage)) {
+        if (!(context.widget is ReminderPage)) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => NotificationPage()),
+            MaterialPageRoute(builder: (context) => ReminderPage()),
           );
         }
         break;
@@ -69,7 +70,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       builder: (context, child) {
         return Container(
           height: 100,
-          color: Colors.transparent, // Make outer container transparent
+          color: Colors.transparent, 
           child: Center(
             child: Container(
               width: screenWidth * 0.9,
@@ -95,7 +96,10 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                 children: [
                   _buildNavItem(Icons.home_rounded, 0),
                   _buildNavItem(Icons.emoji_events_rounded, 1),
-                  _buildNavItem(Icons.notifications_rounded, 2),
+                  _buildNavItem(
+                    Icons.alarm_rounded,
+                    2,
+                  ), 
                   _buildNavItem(Icons.fitness_center_rounded, 3),
                   _buildNavItem(Icons.person_rounded, 4),
                 ],

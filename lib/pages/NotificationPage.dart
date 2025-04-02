@@ -9,7 +9,10 @@ class NotificationPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text('Notifications'),
-        automaticallyImplyLeading: false, // Remove back button
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: ListView.builder(
         itemCount: 5,
@@ -31,7 +34,6 @@ class NotificationPage extends StatelessWidget {
           );
         },
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
     );
   }
 }
