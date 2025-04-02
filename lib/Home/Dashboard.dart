@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/CustomBottomNavBar.dart';
 import '../pages/NotificationPage.dart';
 import '../pages/ProfilePage.dart';
@@ -7,6 +8,17 @@ import '../pages/AIAssistantPage.dart';
 
 class DashboardPage extends StatelessWidget {
   final NavigationController _controller = NavigationController();
+  final String userId;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  DashboardPage({super.key, required this.userId});
+
+  Stream<DocumentSnapshot> _getUserData() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +39,46 @@ class DashboardPage extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Hi, Vaibhav',
-                      style: TextStyle(
-                        color: Color(0xFF86E200),
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    StreamBuilder<DocumentSnapshot>(
+                      stream: _getUserData(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text(
+                            'Hi, User',
+                            style: TextStyle(
+                              color: Color(0xFF86E200),
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        }
+
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Text(
+                            'Loading...',
+                            style: TextStyle(
+                              color: Color(0xFF86E200),
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        }
+
+                        final data =
+                            snapshot.data?.data() as Map<String, dynamic>?;
+                        final firstName =
+                            data?['firstName'] as String? ?? 'User';
+
+                        return Text(
+                          'Hi, $firstName',
+                          style: TextStyle(
+                            color: Color(0xFF86E200),
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
                     ),
                     SizedBox(height: 4),
                     Text(
@@ -69,13 +114,14 @@ class DashboardPage extends StatelessWidget {
                     SizedBox(width: 12),
                     GestureDetector(
                       onTap: () {
-                        _controller.setIndex(
-                          4,
-                        ); // Set bottom nav to profile index
+                        _controller.setIndex(4);
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProfilePage(),
+                            builder:
+                                (context) => ProfilePage(
+                                  userId: userId,
+                                ), // Pass the correct userId
                           ),
                         );
                       },
@@ -213,7 +259,7 @@ class DashboardPage extends StatelessWidget {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: CustomBottomNavBar(userId: userId),
     );
   }
 

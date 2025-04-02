@@ -13,6 +13,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool isChecked = false;
   bool _isPasswordVisible = false;
+  bool _isLoading = false; // Add this line
 
   @override
   Widget build(BuildContext context) {
@@ -155,14 +156,27 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 20),
                 Center(
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DashboardPage(),
-                        ),
-                      );
-                    },
+                    onPressed:
+                        _isLoading
+                            ? null
+                            : () async {
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              // Simulate loading for demo
+                              await Future.delayed(Duration(seconds: 2));
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) =>
+                                          DashboardPage(userId: 'user123'),
+                                ),
+                              );
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF86E200),
                       shape: RoundedRectangleBorder(
@@ -173,10 +187,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         vertical: 15,
                       ),
                     ),
-                    child: const Text(
-                      'Log in',
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
+                    child:
+                        _isLoading
+                            ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.black,
+                                strokeWidth: 2,
+                              ),
+                            )
+                            : const Text(
+                              'Log in',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                            ),
                   ),
                 ),
                 const SizedBox(height: 20),

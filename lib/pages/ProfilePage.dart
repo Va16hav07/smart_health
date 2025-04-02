@@ -10,6 +10,10 @@ import 'PrivacyPolicyPage.dart';
 import 'EditProfilePage.dart';
 
 class ProfilePage extends StatefulWidget {
+  final String userId;
+
+  const ProfilePage({Key? key, required this.userId}) : super(key: key);
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -216,7 +220,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
         ),
-        child: CustomBottomNavBar(),
+        child: CustomBottomNavBar(userId: widget.userId),
       ),
     );
   }

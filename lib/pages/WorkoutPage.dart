@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../widgets/CustomBottomNavBar.dart';
 
 class WorkoutPage extends StatelessWidget {
+  final String userId;
+
+  const WorkoutPage({Key? key, required this.userId}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +31,7 @@ class WorkoutPage extends StatelessWidget {
           _buildWorkoutItem('Stretching', '15 mins', '100 kcal'),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: CustomBottomNavBar(userId: userId),
     );
   }
 

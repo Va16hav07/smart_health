@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../widgets/CustomBottomNavBar.dart';
 
 class ChallengesPage extends StatelessWidget {
+  final String userId;
+
+  const ChallengesPage({Key? key, required this.userId}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +38,7 @@ class ChallengesPage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: CustomBottomNavBar(userId: userId),
     );
   }
 

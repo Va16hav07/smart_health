@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../widgets/CustomBottomNavBar.dart';
 
 class ReminderPage extends StatelessWidget {
+  final String userId;
+
+  const ReminderPage({Key? key, required this.userId}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +44,7 @@ class ReminderPage extends StatelessWidget {
           );
         },
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: CustomBottomNavBar(userId: userId),
     );
   }
 }

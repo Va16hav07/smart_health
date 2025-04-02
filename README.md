@@ -1,16 +1,63 @@
-# smart_health
+# Smart Health
 
-A new Flutter project.
+A Flutter-based mobile application for health monitoring and wellness tracking.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Personal health dashboard
+- Activity tracking
+- Health metrics monitoring
+- Medication reminders
+- Medical records management
+- Appointment scheduling
 
-A few resources to get you started if this is your first Flutter project:
+## Tech Stack
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Flutter
+- Dart
+- Firebase (Backend)
+- Local Storage for offline functionality
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Setup & Installation
+
+1. Ensure you have Flutter installed on your machine
+2. Clone the repository:
+```bash
+git clone https://github.com/yourusername/smart_health.git
+```
+3. Install dependencies:
+```bash
+flutter pub get
+```
+4. Run the app:
+```bash
+flutter run
+```
+
+## Project Structure
+
+```
+lib/
+├── models/      # Data models
+├── screens/     # UI screens
+├── services/    # Business logic
+├── utils/       # Helper functions
+└── widgets/     # Reusable widgets
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contact
+
+Your Name - [your.email@example.com](mailto:your.email@example.com)
+Project Link: [https://github.com/yourusername/smart_health](https://github.com/yourusername/smart_health)

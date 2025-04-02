@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_health/Login&Signup/welcome.dart';
 
 void main() {
@@ -10,12 +11,16 @@ class UserInfoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: UserInfoScreen(),
+      home: UserInfoScreen(userId: 'userId'), // Replace with actual userId
     );
   }
 }
 
 class UserInfoScreen extends StatefulWidget {
+  final String userId;
+
+  const UserInfoScreen({Key? key, required this.userId}) : super(key: key);
+
   @override
   _UserInfoScreenState createState() => _UserInfoScreenState();
 }
@@ -25,8 +30,31 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   DateTime? selectedDate;
   final TextEditingController weightController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
-  final TextEditingController nameController =
-      TextEditingController(); // Add this line
+
+  Future<void> _saveUserInfo() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.userId)
+          .update({
+            'gender': selectedGender,
+            'dateOfBirth': selectedDate,
+            'weight': double.tryParse(weightController.text),
+            'height': double.tryParse(heightController.text),
+          });
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => WelcomePage(userId: widget.userId),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error saving data: $e')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +74,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20),
-                  _buildInputField(
-                    "Enter Your Name",
-                    "",
-                    nameController,
-                  ), // Add this line
                   _buildDropdown(),
                   _buildDatePicker(),
                   _buildInputField("Enter Your Weight", "KG", weightController),
@@ -60,20 +83,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.5,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => WelcomePage(
-                                    userName:
-                                        nameController.text.isNotEmpty
-                                            ? nameController.text
-                                            : 'User',
-                                  ),
-                            ),
-                          );
-                        },
+                        onPressed: _saveUserInfo,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF86E200),
                           shape: RoundedRectangleBorder(

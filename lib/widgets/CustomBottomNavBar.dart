@@ -3,11 +3,15 @@ import '../pages/ChallengesPage.dart';
 import '../pages/ProfilePage.dart';
 import '../pages/NotificationPage.dart';
 import '../Home/Dashboard.dart';
-import '../pages/WorkoutPage.dart'; 
+import '../pages/WorkoutPage.dart';
 import '../controllers/NavigationController.dart';
 import '../pages/ReminderPage.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
+  final String userId;
+
+  const CustomBottomNavBar({Key? key, required this.userId}) : super(key: key);
+
   @override
   _CustomBottomNavBarState createState() => _CustomBottomNavBarState();
 }
@@ -23,7 +27,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         if (!(context.widget is DashboardPage)) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => DashboardPage()),
+            MaterialPageRoute(
+              builder: (context) => DashboardPage(userId: widget.userId),
+            ),
           );
         }
         break;
@@ -31,7 +37,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         if (!(context.widget is ChallengesPage)) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => ChallengesPage()),
+            MaterialPageRoute(
+              builder: (context) => ChallengesPage(userId: widget.userId),
+            ),
           );
         }
         break;
@@ -39,7 +47,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         if (!(context.widget is ReminderPage)) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => ReminderPage()),
+            MaterialPageRoute(
+              builder: (context) => ReminderPage(userId: widget.userId),
+            ),
           );
         }
         break;
@@ -47,7 +57,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         if (!(context.widget is WorkoutPage)) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => WorkoutPage()),
+            MaterialPageRoute(
+              builder: (context) => WorkoutPage(userId: widget.userId),
+            ),
           );
         }
         break;
@@ -55,7 +67,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         if (!(context.widget is ProfilePage)) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => ProfilePage()),
+            MaterialPageRoute(
+              builder: (context) => ProfilePage(userId: widget.userId),
+            ),
           );
         }
         break;
@@ -70,7 +84,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       builder: (context, child) {
         return Container(
           height: 100,
-          color: Colors.transparent, 
+          color: Colors.transparent,
           child: Center(
             child: Container(
               width: screenWidth * 0.9,
@@ -96,10 +110,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                 children: [
                   _buildNavItem(Icons.home_rounded, 0),
                   _buildNavItem(Icons.emoji_events_rounded, 1),
-                  _buildNavItem(
-                    Icons.alarm_rounded,
-                    2,
-                  ), 
+                  _buildNavItem(Icons.alarm_rounded, 2),
                   _buildNavItem(Icons.fitness_center_rounded, 3),
                   _buildNavItem(Icons.person_rounded, 4),
                 ],
