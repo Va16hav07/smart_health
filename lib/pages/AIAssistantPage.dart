@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'dart:math' show pi, sin;
 
 class AIAssistantPage extends StatefulWidget {
@@ -13,15 +12,12 @@ class _AIAssistantPageState extends State<AIAssistantPage>
   final TextEditingController _messageController = TextEditingController();
   final List<Map<String, String>> _messages = [];
   final FlutterTts flutterTts = FlutterTts();
-  final stt.SpeechToText _speech = stt.SpeechToText();
-  bool _isListening = false;
   late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
     _initTts();
-    _initSpeech();
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(seconds: 2),
@@ -40,40 +36,8 @@ class _AIAssistantPageState extends State<AIAssistantPage>
     await flutterTts.setSpeechRate(0.5);
   }
 
-  void _initSpeech() async {
-    bool available = await _speech.initialize();
-    if (available) {
-      setState(() => _isListening = false);
-    }
-  }
-
   Future<void> _speak(String text) async {
     await flutterTts.speak(text);
-  }
-
-  void _listen() async {
-    if (!_isListening) {
-      bool available = await _speech.initialize();
-      if (available) {
-        setState(() => _isListening = true);
-        _speech.listen(
-          onResult: (result) {
-            setState(() {
-              _messageController.text = result.recognizedWords;
-              if (result.finalResult) {
-                _isListening = false;
-              }
-            });
-          },
-          listenFor: Duration(seconds: 30),
-          cancelOnError: true,
-          partialResults: true,
-        );
-      }
-    } else {
-      setState(() => _isListening = false);
-      _speech.stop();
-    }
   }
 
   void _handleAIResponse(String userMessage) {
@@ -295,37 +259,6 @@ class _AIAssistantPageState extends State<AIAssistantPage>
                           horizontal: 20,
                           vertical: 16,
                         ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: _listen,
-                    child: Container(
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color:
-                            _isListening
-                                ? Color(0xFF86E200)
-                                : Color(0xFF282828),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color:
-                                _isListening
-                                    ? Color(0xFF86E200).withOpacity(0.3)
-                                    : Colors.transparent,
-                            blurRadius: 12,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        _isListening ? Icons.mic : Icons.mic_none,
-                        color:
-                            _isListening
-                                ? Color(0xFF181818)
-                                : Color(0xFF86E200),
                       ),
                     ),
                   ),

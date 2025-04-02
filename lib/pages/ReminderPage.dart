@@ -8,7 +8,7 @@ class ReminderPage extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text('Reminders'),
+        title: Text('Reminders', style: TextStyle(color: Color(0xFF86E200))),
         automaticallyImplyLeading: false,
       ),
       body: ListView.builder(

@@ -8,8 +8,8 @@ class ProfilePage extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text('Profile'),
-        automaticallyImplyLeading: false, 
+        title: Text('Profile', style: TextStyle(color: Color(0xFF86E200))),
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),

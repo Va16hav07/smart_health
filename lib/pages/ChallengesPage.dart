@@ -8,8 +8,8 @@ class ChallengesPage extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text('Challenges'),
-        automaticallyImplyLeading: false, 
+        title: Text('Challenges', style: TextStyle(color: Color(0xFF86E200))),
+        automaticallyImplyLeading: false,
       ),
       body: ListView(
         padding: EdgeInsets.all(16),

@@ -8,7 +8,7 @@ class WorkoutPage extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text('Workouts'),
+        title: Text('Workouts', style: TextStyle(color: Color(0xFF86E200))),
         automaticallyImplyLeading: false,
       ),
       body: ListView(
