@@ -80,19 +80,17 @@ class _ProfilePageState extends State<ProfilePage> {
     final padding = MediaQuery.of(context).padding;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.transparent,
+      extendBody: true,
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.03, 
-          vertical: padding.top + 16,
-        ),
+        padding: EdgeInsets.fromLTRB(16.0, 40.0, 16.0, padding.bottom + 80.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: screenHeight * 0.02),
             Container(
-              width: double.infinity, 
-              padding: EdgeInsets.all(screenWidth * 0.04), 
+              width: double.infinity,
+              padding: EdgeInsets.all(screenWidth * 0.04),
               margin: EdgeInsets.symmetric(horizontal: 2),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(42),
@@ -206,13 +204,26 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.transparent,
+              Colors.black.withOpacity(0.5),
+              Colors.black,
+            ],
+          ),
+        ),
+        child: CustomBottomNavBar(),
+      ),
     );
   }
 
   Widget _buildStatItem(String label, String value) {
     return Container(
-      width: 100, 
+      width: 100,
       height: 100,
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
