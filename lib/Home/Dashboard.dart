@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/CustomBottomNavBar.dart';
+import '../pages/NotificationPage.dart';
+import '../pages/ProfilePage.dart';
 
 class DashboardPage extends StatelessWidget {
   @override
@@ -29,7 +31,7 @@ class DashboardPage extends StatelessWidget {
                     Text(
                       'Hi, Vaibhav',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Color(0xFF86E200),
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
@@ -43,26 +45,46 @@ class DashboardPage extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Color(0xff2b2b2b),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        Icons.notifications_outlined,
-                        color: Colors.white,
-                        size: 24,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NotificationPage(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Color(0xFF86E200),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          Icons.notifications_outlined,
+                          color: Colors.black,
+                          size: 24,
+                        ),
                       ),
                     ),
                     SizedBox(width: 12),
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: Color(0xff2b2b2b),
-                      child: Icon(
-                        Icons.person_outline,
-                        color: Colors.white,
-                        size: 24,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfilePage(),
+                          ),
+                        );
+                      },
+                      child: CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Color(0xFF86E200),
+                        child: Icon(
+                          Icons.person_outline,
+                          color: Colors.black,
+                          size: 24,
+                        ),
                       ),
                     ),
                   ],
@@ -160,6 +182,7 @@ class DashboardPage extends StatelessWidget {
               70,
               'Beginner',
             ),
+            _buildWorkoutCard('Running', '5 km per day', 85, 'Intermediate'),
           ],
         ),
       ),
@@ -247,7 +270,7 @@ class DashboardPage extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.greenAccent,
+                color: Color(0xFF86E200),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
@@ -302,29 +325,88 @@ class DashboardPage extends StatelessWidget {
 
   Widget _buildStepsCard() {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(24),
+      height: 180,
       decoration: BoxDecoration(
         color: Colors.grey[900],
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Steps of the Day', style: TextStyle(color: Colors.white)),
-          SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
-                '1800/2000',
+                'Steps of the Day',
                 style: TextStyle(
-                  color: Colors.greenAccent,
+                  color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              CircularProgressIndicator(value: 0.8, color: Colors.greenAccent),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '1800',
+                    style: TextStyle(
+                      color: Color(0xFF86E200),
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Goal: 2000 steps',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                ],
+              ),
+              Container(
+                width: 200,
+                height: 8,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: 0.8,
+                    backgroundColor: Colors.grey[800],
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Color(0xFF86E200),
+                    ),
+                  ),
+                ),
+              ),
             ],
+          ),
+          Container(
+            width: 100,
+            height: 100,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: CircularProgressIndicator(
+                    value: 0.8,
+                    strokeWidth: 8,
+                    backgroundColor: Colors.grey[800],
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Color(0xFF86E200),
+                    ),
+                  ),
+                ),
+                Text(
+                  '80%',
+                  style: TextStyle(
+                    color: Color(0xFF86E200),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -347,7 +429,11 @@ class DashboardPage extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Icon(icon, color: color, size: 28),
+            Container(
+              height: 40,
+              width: double.infinity,
+              child: _buildCustomIndicator(title, color),
+            ),
             SizedBox(height: 8),
             Text(title, style: TextStyle(color: Colors.white70)),
             SizedBox(height: 4),
@@ -365,12 +451,28 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
+  Widget _buildCustomIndicator(String type, Color color) {
+    switch (type.toLowerCase()) {
+      case 'heart rate':
+        return CustomPaint(painter: HeartRatePainter(color));
+      case 'water intake':
+        return CustomPaint(painter: WaterBucketPainter(color));
+      case 'sleep':
+        return CustomPaint(painter: BedPainter(color));
+      case 'calories':
+        return CustomPaint(painter: FlamesPainter(color));
+      default:
+        return Icon(Icons.sports, color: color);
+    }
+  }
+
   Widget _buildWorkoutCard(
     String title,
     String subtitle,
     int progress,
     String level,
   ) {
+    final icon = _getWorkoutIcon(title);
     return Container(
       padding: EdgeInsets.all(12),
       margin: EdgeInsets.symmetric(vertical: 8),
@@ -378,26 +480,67 @@ class DashboardPage extends StatelessWidget {
         color: Colors.grey[900],
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Text(title, style: TextStyle(color: Colors.white70)),
-          SizedBox(height: 8),
-          Text(
-            subtitle,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Color(0xFF86E200).withOpacity(0.2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: Color(0xFF86E200)),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(color: Colors.white70, fontSize: 12),
+                ),
+                SizedBox(height: 8),
+                Stack(
+                  children: [
+                    Container(
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[800],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    FractionallySizedBox(
+                      widthFactor: progress / 100,
+                      child: Container(
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Color(0xFF86E200),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4),
+                Text(
+                  level,
+                  style: TextStyle(
+                    color: Color(0xFF86E200),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
-          SizedBox(height: 4),
-          LinearProgressIndicator(
-            value: progress / 100,
-            color: Colors.greenAccent,
-          ),
-          SizedBox(height: 8),
-          Text(level, style: TextStyle(color: Colors.white70, fontSize: 12)),
         ],
       ),
     );
@@ -411,8 +554,161 @@ class DashboardPage extends StatelessWidget {
         return Icons.sports_gymnastics;
       case 'knee push up':
         return Icons.accessibility_new;
+      case 'running':
+        return Icons.directions_run;
       default:
         return Icons.sports;
     }
   }
+}
+
+class HeartRatePainter extends CustomPainter {
+  final Color color;
+  HeartRatePainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2;
+
+    final path = Path();
+    path.moveTo(0, size.height / 2);
+
+    // Draw heartbeat pattern
+    double width = size.width / 12;
+    path.lineTo(width * 2, size.height / 2);
+    path.lineTo(width * 3, size.height / 4);
+    path.lineTo(width * 4, size.height * 3 / 4);
+    path.lineTo(width * 5, size.height / 4);
+    path.lineTo(width * 6, size.height * 3 / 4);
+    path.lineTo(width * 7, size.height / 2);
+    path.lineTo(width * 12, size.height / 2);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class WaterBucketPainter extends CustomPainter {
+  final Color color;
+  WaterBucketPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2;
+
+    // Draw bucket
+    final bucket =
+        Path()
+          ..moveTo(size.width * 0.2, size.height * 0.2)
+          ..lineTo(size.width * 0.2, size.height * 0.8)
+          ..lineTo(size.width * 0.8, size.height * 0.8)
+          ..lineTo(size.width * 0.8, size.height * 0.2);
+
+    // Draw water waves
+    final water =
+        Path()
+          ..moveTo(size.width * 0.2, size.height * 0.5)
+          ..cubicTo(
+            size.width * 0.3,
+            size.height * 0.4,
+            size.width * 0.5,
+            size.height * 0.6,
+            size.width * 0.8,
+            size.height * 0.5,
+          );
+
+    canvas.drawPath(bucket, paint);
+    canvas.drawPath(water, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class BedPainter extends CustomPainter {
+  final Color color;
+  BedPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2;
+
+    // Draw bed frame
+    final bed =
+        Path()
+          ..moveTo(size.width * 0.1, size.height * 0.6)
+          ..lineTo(size.width * 0.1, size.height * 0.8)
+          ..lineTo(size.width * 0.9, size.height * 0.8)
+          ..lineTo(size.width * 0.9, size.height * 0.6)
+          ..lineTo(size.width * 0.1, size.height * 0.6);
+
+    // Draw pillow
+    final pillow =
+        Path()
+          ..moveTo(size.width * 0.2, size.height * 0.4)
+          ..lineTo(size.width * 0.4, size.height * 0.4)
+          ..lineTo(size.width * 0.4, size.height * 0.6)
+          ..lineTo(size.width * 0.2, size.height * 0.6)
+          ..close();
+
+    canvas.drawPath(bed, paint);
+    canvas.drawPath(pillow, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class FlamesPainter extends CustomPainter {
+  final Color color;
+  FlamesPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2;
+
+    // Draw flames
+    final flame =
+        Path()
+          ..moveTo(size.width * 0.5, size.height * 0.8)
+          ..cubicTo(
+            size.width * 0.2,
+            size.height * 0.6,
+            size.width * 0.4,
+            size.height * 0.2,
+            size.width * 0.5,
+            size.height * 0.2,
+          )
+          ..cubicTo(
+            size.width * 0.6,
+            size.height * 0.2,
+            size.width * 0.8,
+            size.height * 0.6,
+            size.width * 0.5,
+            size.height * 0.8,
+          );
+
+    canvas.drawPath(flame, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
